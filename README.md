@@ -27,7 +27,7 @@ Limits worth knowing: `.gltf` files with separate texture or buffer files are no
 
 ## Privacy
 
-Files you open are read inside your browser and are never uploaded. LAK itself only loads its own page and its built-in sample clips from the same site, and contains no analytics or tracking. The hosted copy is served through Cloudflare, which counts page visits with its cookieless Web Analytics; it sees which pages load, never your files. (A GLB that refers to textures or buffers at outside web addresses makes the browser fetch them, as any 3D viewer would.) Your choice of dark or studio-grey viewport is the only thing remembered, in the browser's local storage.
+Files you open are read inside your browser and are never uploaded. LAK itself only loads its own page and its built-in sample clips from the same site, and contains no analytics or tracking. The hosted copy at wisessing.github.io/lak may count page visits through its hosting's cookieless web analytics; that sees which pages load, never your files. (A GLB that refers to textures or buffers at outside web addresses makes the browser fetch them, as any 3D viewer would.) Your choice of dark or studio-grey viewport is the only thing remembered, in the browser's local storage.
 
 ## Run it yourself
 
