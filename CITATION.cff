@@ -1,6 +1,7 @@
 cff-version: 1.2.0
 message: "If you use LAK, please cite it as below."
 title: "LAK: Lens on Animation Kinematics"
+abstract: "A web viewer for skeletal motion in FBX or GLB, with playback, joint trails, glitch markers, trim and export, and handheld augmented reality on Android."
 type: software
 version: 2.0.0
 date-released: 2026-10-30

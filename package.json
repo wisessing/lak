@@ -1,7 +1,7 @@
 {
   "name": "lak",
   "version": "2.0.0",
-  "description": "LAK (Lens on Animation Kinematics): a web viewer for motion-capture and animation data, with handheld AR.",
+  "description": "LAK (Lens on Animation Kinematics): a web viewer for any FBX or GLB motion (capture, keyframe or AI-generated), with handheld AR.",
   "license": "Apache-2.0",
   "private": true,
   "homepage": "https://wisessing.github.io/lak/",
