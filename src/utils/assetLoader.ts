@@ -11,8 +11,8 @@ import { sampleUrl, type SampleAsset } from '../constants/sampleAssets';
  * The two formats need genuinely different handling, and conflating them is how
  * a model ends up 100× too big:
  *
- * - **FBX** arrives in the exporter's units, which for Mixamo means
- *   centimetres, so it is scaled by 0.01. Its clips hang off
+ * - **FBX** arrives in the exporter's units, which for most character
+ *   exporters means centimetres, so it is scaled by 0.01. Its clips hang off
  *   `object.animations`.
  * - **GLB** is metres by specification, so it is *not* scaled. Its clips come
  *   back beside the scene rather than on it, and have to be attached.

@@ -23,7 +23,7 @@ LAK is a web viewer for skeletal motion stored as FBX or GLB: motion capture fro
 
 ## What files work
 
-Any FBX or single-file GLB with a skeleton and at least one animation clip. LAK does not look for particular bone names, so it is not tied to one rig or one capture system: clips exported from capture software, from Blender, Maya or 3ds Max, from game assets, or from AI motion generators all open the same way. Mixamo-style FBX files, which load with a duplicate "shadow" skeleton, are cleaned up automatically. LAK has been tested with humanoid characters; other skeletons should open, but have not been tried.
+Any FBX or single-file GLB with a skeleton and at least one animation clip. LAK does not look for particular bone names, so it is not tied to one rig or one capture system: clips exported from capture software, from Blender, Maya or 3ds Max, from game assets, or from AI motion generators all open the same way. FBX files whose skeleton is shared by several meshes, which three.js loads as a duplicate "shadow" skeleton, are cleaned up automatically. LAK has been tested with humanoid characters; other skeletons should open, but have not been tried.
 
 Limits worth knowing:
 

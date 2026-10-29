@@ -281,7 +281,7 @@ export function useCameraRig(
            * Measuring the box's own x, y and z extents answers a different
            * question: how big the subject is along the world axes. What matters
            * is how big it is across the screen, which depends on where the
-           * camera is. From the rear view of the old Mixamo kick fixture the two differ
+           * camera is. From the rear view of a kicking test clip the two differ
            * enough to push a foot a third of a screen below the bottom edge.
            *
            * Depth matters for the same reason. A perspective camera sees a

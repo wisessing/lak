@@ -214,8 +214,8 @@
  * centred column that holds it starts at x=111, so the row spans two thirds of
  * the width right where the subject is framed: projecting the dance fixture's
  * baked bones through the live camera put 146 samples inside the button box, in
- * every one of its 64 frames (the Mixamo-era samples). The kick fixture sat lower and missed
- * it, which is why a screenshot pass did not catch this.
+ * every one of its 64 frames. Another fixture sat lower and missed it, which is
+ * why a screenshot pass did not catch this.
  *
  * So the row becomes a column against the right edge, and each button puts its
  * label under its icon instead of beside it. That is what gets the footprint to

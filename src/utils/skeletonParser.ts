@@ -192,7 +192,7 @@ export function parseSkeleton(model: THREE.Group): {
   // 2. Create Joint Markers using InstancedMesh (lightweight spherical joints)
   const jointMarkers = new THREE.Group();
   // Marker size is derived from the model, not a constant. 0.006 was tuned for
-  // a 0.01-scaled Mixamo FBX; a GLB arrives in metres and an asset from
+  // a 0.01-scaled centimetre FBX; a GLB arrives in metres and an asset from
   // elsewhere could be at any scale, where a fixed radius is either invisible
   // or swallows the rig.
   const sphereGeo = new THREE.SphereGeometry(jointMarkerRadius(model, bones), 6, 6);

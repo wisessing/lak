@@ -1,27 +1,24 @@
 import * as THREE from 'three';
 
 /**
- * Collapse the duplicate "shadow" rig that Mixamo files such as X Bot and Y Bot
- * arrive with, and put every skinned mesh on one shared skeleton.
+ * Collapse the duplicate "shadow" rig that some FBX character files arrive
+ * with, and put every skinned mesh on one shared skeleton.
  *
- * None of the bundled samples exercises this any more. They were Mixamo bots
- * until 29 October 2026; the Quaternius mannequin that replaced them has one
- * skinned mesh and loads at 65 bones with nothing removed. The handling stays for
- * user-loaded Mixamo files.
+ * The bundled samples have one skinned mesh and load with nothing removed. The
+ * handling is for user-loaded files whose skeleton is shared by several meshes.
  *
  * ## Where the duplicate rig comes from
  *
- * The assets are fine — the Mixamo X Bot idle holds 67 `Model` records (65 bones
- * plus two meshes) and two skin deformers over that one skeleton. The duplication is
- * `FBXLoader`'s: when a bone is shared by more than one skin cluster it clones the
- * `Bone` and parents the clone under the original, by its own admission —
- * "In cases where a bone is shared between multiple meshes duplicate the bone here
- * and add it as a child of the first bone" (`FBXLoader.js`, `parseSkeleton`).
+ * Such files are fine — a typical one holds 65 bones, two meshes and two skin
+ * deformers over that one skeleton. The duplication is `FBXLoader`'s: when a
+ * bone is shared by more than one skin cluster it clones the `Bone` and parents
+ * the clone under the original, by its own admission — "In cases where a bone
+ * is shared between multiple meshes duplicate the bone here and add it as a
+ * child of the first bone" (`FBXLoader.js`, `parseSkeleton`).
  *
  * So each mesh gets its own `Skeleton`, and the second one is a shadow: every bone
  * is a leaf child of the identically named bone in the first, with an identity
- * local transform. A 65-bone rig arrives as 129 bones; the Y Bot files measured
- * here arrived as 117.
+ * local transform. A 65-bone rig can arrive as 129 bones.
  *
  * In three.js this mostly hides: a shadow bone inherits its twin's animated world
  * matrix, and `Skeleton.update()` reads world matrices, so the viewport looks
@@ -30,17 +27,16 @@ import * as THREE from 'three';
  * - **GLB.** `GLTFExporter` emits one skin per skeleton, so the file describes two
  *   armatures whose bones are parented into each other. Blender builds an armature
  *   per skin and cannot parent bones across them, so the second mesh loses its
- *   pose. On the bots that second mesh is the joint shell — the spheres at neck,
- *   shoulders, elbows, abdomen, knees and ankles that bridge the gaps in the
- *   segmented surface mesh — so the body imports with visible holes.
+ *   pose. When that second mesh is, say, a joint shell bridging the gaps in a
+ *   segmented surface mesh, the body imports with visible holes.
  * - **FBX.** The writer receives whatever `parseSkeleton` collected, which is all
  *   129 bones including the shadow copies.
  * - **Analysis.** The motion bake samples those same 129 bones, so half of every
  *   per-bone metric describes a duplicate.
  *
  * Which copy the `AnimationClip` drives is also luck: tracks bind by name, so
- * `PropertyBinding` takes whichever copy it reaches first. On the X Bot files that
- * was the original hierarchy; on the Y Bot files it was the shadow.
+ * `PropertyBinding` takes whichever copy it reaches first: on one file the
+ * original hierarchy, on another the shadow.
  *
  * ## What this does
  *

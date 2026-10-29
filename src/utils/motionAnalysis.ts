@@ -9,8 +9,8 @@ import {
 /**
  * Quality checks over baked motion data.
  *
- * Mocap scale varies enormously between exporters — Mixamo works in
- * centimetres, other pipelines in metres — so every threshold here is either
+ * Mocap scale varies enormously between exporters — some work in
+ * centimetres, others in metres — so every threshold here is either
  * dimensionless or measured against a robust statistic of the clip itself. A
  * fixed "5 units per frame is a pop" rule would fire on every frame of one file
  * and never on another.

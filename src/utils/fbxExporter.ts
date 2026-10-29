@@ -262,8 +262,8 @@ interface BoneSamples {
  * The transform of the plain nodes between `model` and a top-level bone.
  *
  * A top-level bone is written under the scene root, so its local transform has
- * to carry whatever sat above it in the source. On a Mixamo file that is nothing:
- * the hips hang straight off the model. A Blender export puts an armature node
+ * to carry whatever sat above it in the source. On many character files that is
+ * nothing: the hips hang straight off the model. A Blender export puts an armature node
  * in between, and that node holds the axis change and the metre-to-centimetre
  * scale; leave it out and the keys come out a hundred times too small and lying
  * on their back. Null when a bone has an exported bone (or the model) as parent.
@@ -516,8 +516,8 @@ function buildMeshPart(
   // The vertices go out in model space, with the mesh's placement baked in, and
   // the mesh node is written as the identity. three.js's FBXLoader binds a mesh
   // with an identity bind matrix when the file has no bind pose, so a mesh node
-  // carrying a transform comes back skinned in the wrong place. On a Mixamo file
-  // the placement is the identity anyway; a Blender export puts the axis change
+  // carrying a transform comes back skinned in the wrong place. On many character
+  // files the placement is the identity anyway; a Blender export puts the axis change
   // and unit scale here.
   const placed = new THREE.Matrix4();
   for (let node: THREE.Object3D | null = mesh; node && node !== model; node = node.parent) {
