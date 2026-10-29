@@ -1,0 +1,81 @@
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  height: 40px;
+  padding: 0 10px;
+  background: var(--surface-1);
+  border-bottom: 1px solid var(--border);
+  flex: 0 0 auto;
+}
+
+.topbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12.5px;
+  font-weight: 650;
+  color: var(--text-1);
+  letter-spacing: -0.1px;
+  padding-right: 4px;
+}
+
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  /* Clip rather than grow: a top bar wider than the screen made the app
+     scroll sideways on a phone, cutting off the left of every row. */
+  min-width: 0;
+  overflow: hidden;
+}
+
+.topbar-modified {
+  margin-left: 6px;
+  padding: 2px 7px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 650;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.topbar-right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+@media (pointer: coarse) {
+  .topbar {
+    height: 56px;
+    gap: 8px;
+    padding: 0 8px;
+  }
+
+  .topbar-brand span {
+    /* The wordmark is the first thing to go when space is tight — the icon
+       still identifies the app. */
+    display: none;
+  }
+}
+
+@media (max-width: 560px) {
+  .topbar-brand span { display: none; }
+
+  /* On a phone the top bar's actions go icon-only, AR Mode included (as a
+     headset): with all three labelled, the bar was 488px on a 384px screen
+     (Galaxy S24 Ultra, 29 October 2026). Hidden visually, not removed, so the
+     buttons keep their accessible names. */
+  .topbar-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}

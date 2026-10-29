@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="dark" />
+    <title>LAK – Lens on Animation Kinematics</title>
+    <script>
+      // Stamp the stored theme before first paint so the app never flashes the
+      // default. useTheme adopts whatever this decided.
+      try {
+        var t = localStorage.getItem('lak.theme');
+        if (t === 'grey' || t === 'dark') document.documentElement.dataset.theme = t;
+      } catch (e) {
+        /* blocked storage: keep the default */
+      }
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

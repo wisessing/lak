@@ -1,0 +1,23 @@
+.scene-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  /* The canvas is transparent (renderer alpha, scene.background null), so this
+     is what actually paints the viewport ground — and why the theme's --bg
+     reaches the 3D view with no JS involved. */
+  background: var(--bg);
+}
+
+.scene-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  outline: none;
+  cursor: grab;
+  background: transparent;
+}
+
+.scene-canvas:active {
+  cursor: grabbing;
+}

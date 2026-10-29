@@ -1,0 +1,335 @@
+/* ============================================================
+   LAK design tokens & primitives
+   ------------------------------------------------------------
+   Dark is the default theme. "Studio Grey" ([data-theme='grey'])
+   swaps only the viewport ground for an 18% reference grey — the
+   chrome stays dark, the way DCC viewers do it.
+   Theme is stamped on <html data-theme> before first paint by an
+   inline script in index.html, and persisted by useTheme.
+   ============================================================ */
+
+:root {
+  /* Surfaces (dock, bars, wells) */
+  --bg: #131418;            /* viewport ground */
+  --surface-1: #1b1d22;     /* docks, bars */
+  --surface-2: #25272e;     /* wells, inputs, tracks */
+  --surface-3: #2f323a;     /* hover */
+  --border: #33363f;        /* dividers between surfaces (decorative) */
+  --border-strong: #646873;  /* control boundaries — 3:1, per WCAG 1.4.11 */
+
+  /* Text */
+  /* Text. Every pair below clears WCAG AA 4.5:1 against the surface it is
+     used on — measured, not eyeballed; --text-3 in particular was 3.88:1 on
+     surface-2 before. */
+  --text-1: #f2f3f5;        /* headings, values      13.4:1 on surface-2 */
+  --text-2: #b7bbc4;        /* body, labels           7.8:1 */
+  --text-3: #8c909a;        /* muted, hints           4.6:1 */
+
+  /* Accent. Two shades on purpose: --accent is for accent-coloured *text and
+     icons* on dark surfaces, --accent-strong is the primary button fill, dark
+     enough that white on it clears 4.5:1. One shade cannot do both. */
+  --accent: #8e7ff8;
+  --accent-strong: #7467ce;
+  --accent-hover: #a396ff;
+  --accent-soft: rgba(142, 127, 248, 0.16);
+  --on-accent: #ffffff;
+
+  /* Signals (one home for the quality colours) */
+  --danger: #ec5e63;
+  --warn: #f0a33c;
+  --info: #4cc2ff;
+  --success: #3fbf7f;
+
+  /* Structure */
+  --radius-s: 4px;
+  --radius-m: 8px;
+  --shadow-1: 0 4px 18px rgba(0, 0, 0, 0.45);
+  --z-dock: 10;
+  --z-overlay: 100;
+  --z-toast: 200;
+  --z-dialog: 300;
+
+  --font-sans: 'Inter Variable', Inter, system-ui, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: ui-monospace, Consolas, 'SF Mono', monospace;
+
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text-2);
+  background: var(--bg);
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Studio Grey: an 18% reference grey viewport for judging motion. */
+:root[data-theme='grey'] {
+  --bg: #767676;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text-2);
+}
+
+h1, h2, h3, h4 {
+  font-weight: 600;
+  color: var(--text-1);
+}
+
+p { margin: 0; }
+
+/* ---- Primitives ------------------------------------------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--surface-2);
+  color: var(--text-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-s);
+  padding: 5px 12px;
+  font-size: 12px;
+  font-weight: 550;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.12s ease, border-color 0.12s ease, color 0.12s ease;
+  white-space: nowrap;
+}
+
+.btn:hover:not(:disabled) {
+  background: var(--surface-3);
+  border-color: var(--border-strong);
+  color: var(--text-1);
+}
+
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background: var(--accent-strong);
+  border-color: var(--accent-strong);
+  color: var(--on-accent);
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+  color: var(--on-accent);
+}
+
+.btn-ghost {
+  background: transparent;
+  border-color: transparent;
+}
+
+.btn-ghost:hover:not(:disabled) {
+  background: var(--surface-2);
+  border-color: transparent;
+}
+
+/* Square icon-only button (toolbar, transport) */
+.btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  background: transparent;
+  color: var(--text-2);
+  border: 1px solid transparent;
+  border-radius: var(--radius-s);
+  cursor: pointer;
+  transition: background 0.12s ease, color 0.12s ease;
+}
+
+.btn-icon:hover:not(:disabled) {
+  background: var(--surface-3);
+  color: var(--text-1);
+}
+
+.btn-icon:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.btn-icon.is-active,
+.btn-icon.is-active:hover:not(:disabled) {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+/* Inputs */
+.field {
+  background: var(--surface-2);
+  color: var(--text-1);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-s);
+  padding: 4px 8px;
+  font-size: 12px;
+  font-family: inherit;
+}
+
+.field:focus {
+  border-color: var(--accent);
+  outline: none;
+}
+
+select.field { cursor: pointer; }
+input[type='number'].field { font-family: var(--font-mono); }
+
+input[type='range'] {
+  accent-color: var(--accent);
+}
+
+input[type='checkbox'] {
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+/* One focus ring for the whole app. On chrome surfaces the accent alone clears
+   3:1 comfortably (5.7:1 on surface-1). */
+:focus-visible {
+  outline: 2px solid var(--accent-hover);
+  outline-offset: 1px;
+}
+
+/* Controls that sit over the *viewport* are a different problem: the ground
+   behind them is whatever the user loaded, and in the grey theme it is a mid
+   #767676 — the worst case, where neither a light nor a dark halo alone clears
+   3:1. So those get a two-tone ring, which contrasts against itself: whatever
+   the background, one of the two tones has an edge against it. */
+.view-gizmo :focus-visible {
+  outline-color: #ffffff;
+  box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.9);
+}
+
+/* One scrollbar style for the whole app. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+}
+*::-webkit-scrollbar { width: 8px; height: 8px; }
+*::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 4px;
+}
+*::-webkit-scrollbar-track { background: transparent; }
+
+/* Muted section label (dock sections, dialog groups) */
+.section-label {
+  font-size: 10px;
+  font-weight: 650;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--text-3);
+}
+
+.hint {
+  font-size: 11px;
+  line-height: 1.45;
+  color: var(--text-3);
+}
+
+.mono { font-family: var(--font-mono); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ---- Touch targets -------------------------------------------
+   A coarse pointer (finger, stylus) needs ~44px; a mouse does not, and
+   inflating everything for the mouse case would waste the toolbar. So the
+   compact sizes above are the fine-pointer defaults, and these are the
+   coarse-pointer overrides.
+
+   Where a control should stay visually small, the target grows through
+   padding and a negative margin rather than by making the glyph bigger. */
+
+@media (pointer: coarse) {
+  :root { font-size: 15px; }
+
+  .btn {
+    min-height: 44px;
+    padding: 10px 16px;
+    font-size: 13px;
+  }
+
+  .btn-icon {
+    width: 44px;
+    height: 44px;
+  }
+
+  .field {
+    min-height: 44px;
+    padding: 10px 12px;
+    font-size: 14px;
+  }
+
+  select.field { padding-right: 28px; }
+
+  input[type='checkbox'] {
+    width: 22px;
+    height: 22px;
+  }
+
+  input[type='range'] {
+    height: 44px;
+  }
+}
+
+/* Fine pointers with a touchscreen (a laptop with a touch display) get the
+   compact layout, since the mouse is the primary device — but any device
+   without hover must not hide affordances behind :hover. */
+@media (hover: none) {
+  /* On touch the hover state sticks to whatever was tapped last, so it must
+     never restyle a pressed toggle: that made the toggle just turned on look
+     off. */
+  .btn:hover:not(:disabled):not(.is-active),
+  .btn-icon:hover:not(:disabled):not(.is-active) {
+    background: inherit;
+  }
+
+  .btn:active:not(:disabled),
+  .btn-icon:active:not(:disabled) {
+    background: var(--surface-3);
+    color: var(--text-1);
+  }
+}
+
+/* Visually hidden, still announced. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}

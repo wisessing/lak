@@ -1,0 +1,435 @@
+/*
+ * The DOM overlay for a handheld AR session.
+ *
+ * The one rule that governs this file: everything except an actual control
+ * surface must be transparent. The runtime composites this subtree over the
+ * camera feed, so a stray opaque background here is a sheet of colour where the
+ * room should be, and the session looks broken rather than the styling.
+ *
+ * The controls themselves are the page's own — `.btn`, `.btn-icon`, `.field`,
+ * the timeline bar's transport and toggle order — sitting on two floating
+ * cards cut from the same tokens as the docks. What is different from the
+ * page is only what a camera view forces: the cards are translucent so the
+ * room stays legible behind them, and they keep clear of the display's safe
+ * areas.
+ */
+
+.xr-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-toast, 900);
+  /* Transparent and inert until a session is running. It stays mounted so the
+     element handed to requestSession keeps its identity. */
+  background: transparent;
+  pointer-events: none;
+  display: none;
+  /* The card surface: the dock colour with the room showing through. A theme
+     surface rather than a fixed dark, so the overlay follows the page's theme
+     the way the docks do. */
+  --xr-card: color-mix(in srgb, var(--surface-1) 88%, transparent);
+  --xr-card-border: color-mix(in srgb, var(--border-strong) 55%, transparent);
+  --xr-inset-x: max(12px, env(safe-area-inset-left), env(safe-area-inset-right));
+  --xr-inset-top: max(12px, env(safe-area-inset-top));
+  --xr-inset-bottom: max(12px, env(safe-area-inset-bottom));
+}
+
+.xr-overlay.is-presenting {
+  display: block;
+}
+
+/* ---- Shared card ------------------------------------------------------- */
+
+.xr-top,
+.xr-bar,
+.xr-place {
+  position: absolute;
+  pointer-events: auto;
+  background: var(--xr-card);
+  border: 1px solid var(--xr-card-border);
+  border-radius: var(--radius-m);
+  box-shadow: var(--shadow-1);
+  backdrop-filter: blur(16px) saturate(1.1);
+  -webkit-backdrop-filter: blur(16px) saturate(1.1);
+  color: var(--text-1);
+  font-family: var(--font-sans);
+}
+
+/* ---- Top strip: what is happening, and the way out ---------------------- */
+
+.xr-top {
+  top: var(--xr-inset-top);
+  left: var(--xr-inset-x);
+  right: var(--xr-inset-x);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 56px;
+  padding: 6px 6px 6px 16px;
+}
+
+.xr-overlay__status {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.35;
+  color: var(--text-1);
+}
+
+.xr-dot {
+  flex: 0 0 auto;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--text-3);
+  box-shadow: 0 0 0 3px color-mix(in srgb, currentColor 18%, transparent);
+  color: var(--text-3);
+}
+
+.xr-dot[data-state='searching'] {
+  background: var(--warn);
+  color: var(--warn);
+  animation: xr-pulse 1.6s ease-in-out infinite;
+}
+
+.xr-dot[data-state='ready'] {
+  background: var(--accent);
+  color: var(--accent);
+}
+
+.xr-dot[data-state='placed'] {
+  background: var(--success);
+  color: var(--success);
+}
+
+.xr-dot[data-state='hidden'] {
+  background: var(--text-3);
+  color: var(--text-3);
+}
+
+@keyframes xr-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 3px color-mix(in srgb, currentColor 18%, transparent);
+  }
+  50% {
+    box-shadow: 0 0 0 7px color-mix(in srgb, currentColor 8%, transparent);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .xr-dot[data-state='searching'] {
+    animation: none;
+  }
+}
+
+.xr-overlay__note {
+  color: var(--text-2);
+}
+
+.xr-exit {
+  flex: 0 0 auto;
+  /* The control that gets someone out of a session is the last one that may be
+     hard to hit, so it keeps the touch minimum even on a fine pointer. */
+  min-height: 44px;
+  padding: 0 16px 0 12px;
+  color: var(--text-1);
+}
+
+/* ---- Placement: one primary action, centred where the thumbs are --------- */
+
+.xr-place {
+  left: 50%;
+  bottom: var(--xr-inset-bottom);
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+}
+
+.xr-place__cta {
+  min-height: 48px;
+  padding: 0 24px;
+  font-size: 14px;
+}
+
+.xr-place .btn {
+  min-height: 48px;
+}
+
+/* ---- Inspection bar: the timeline bar, rearranged for a camera view ----- */
+
+/* Floating and centred, as wide as its controls and no wider, so the room
+   stays visible either side of it. It wraps only when the display is narrower
+   than one row of controls. */
+.xr-bar {
+  left: 50%;
+  /* Lifted clear of the bottom edge, where Android's gesture bar sits and a
+     thumb holding the tablet rests. The
+     safe-area inset reports 0 on the tablet tested, so the fixed lift does
+     the work; a real inset adds to it. */
+  bottom: max(24px, calc(env(safe-area-inset-bottom) + 16px));
+  transform: translateX(-50%);
+  /* Fixed to its content once, so a counting readout cannot make it breathe.
+     The readout reserves a slot per varying value, so "content" is constant. */
+  width: max-content;
+  max-width: calc(100% - 2 * var(--xr-inset-x));
+  padding: 8px 12px;
+}
+
+.xr-inspect {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+/* The scrub track with the minimize control at its end. */
+.xr-inspect__head {
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Minimized: one row across the screen, play, track, expand. Wide rather
+   than fitted to its content, so the track keeps a usable length. */
+.xr-bar:has(.xr-inspect.is-minimized) {
+  width: calc(100% - 2 * var(--xr-inset-x));
+  padding: 4px 8px;
+}
+
+.xr-inspect.is-minimized {
+  flex-direction: row;
+  gap: 6px;
+}
+
+.xr-inspect.is-minimized .xr-scrub,
+.xr-inspect__head .xr-scrub {
+  flex: 1 1 auto;
+  min-width: 0;
+  width: auto;
+  margin: 0;
+}
+
+/* ---- Scrub track ------------------------------------------------------- */
+/* Spans the bar; the bar's width is set by the control rows below it. */
+
+.xr-scrub {
+  align-self: stretch;
+  width: 100%;
+  margin: 2px 0 4px;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 20px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.xr-scrub::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  border: 1px solid var(--border-strong);
+}
+
+.xr-scrub::-moz-range-track {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  border: 1px solid var(--border-strong);
+}
+
+.xr-scrub::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  margin-top: -8px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 2px solid var(--on-accent);
+  box-shadow: var(--shadow-1);
+}
+
+.xr-scrub::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 2px solid var(--on-accent);
+  box-shadow: var(--shadow-1);
+}
+
+.xr-bar__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 10px 14px;
+}
+
+.xr-bar__row--secondary {
+  align-self: stretch;
+  padding-top: 6px;
+  border-top: 1px solid var(--border);
+}
+
+.xr-transport,
+.xr-overlays {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex: 0 0 auto;
+}
+
+.xr-clear {
+  /* The selection amber, as in the viewport and the timeline bar, so the
+     three read as one thing. */
+  color: #ffb020;
+}
+
+.xr-readout {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex: 0 0 auto;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.xr-time {
+  font-size: 13px;
+  color: var(--text-1);
+  white-space: nowrap;
+}
+
+.xr-frame {
+  font-size: 12px;
+  color: var(--text-3);
+  white-space: nowrap;
+}
+
+/* A fixed slot for a counting value, right-aligned, so the readout does not
+   change width as the digit count grows. */
+.xr-num {
+  display: inline-block;
+  text-align: right;
+}
+
+.xr-speed-label {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 0 0 auto;
+  font-size: 10px;
+  color: var(--text-3);
+}
+
+.xr-speed {
+  width: 84px;
+}
+
+.xr-size {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 0 0 auto;
+}
+
+.xr-size__label {
+  font-size: 12px;
+  color: var(--text-3);
+}
+
+/* A segmented control built from ordinary buttons: one border around the
+   group, the chosen segment lit the way an active icon button is lit. */
+.xr-seg {
+  display: inline-flex;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-s);
+  overflow: hidden;
+}
+
+.xr-seg__btn {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  min-width: 44px;
+}
+
+.xr-seg__btn + .xr-seg__btn {
+  border-left: 1px solid var(--border-strong);
+}
+
+.xr-seg__btn.is-active,
+.xr-seg__btn.is-active:hover:not(:disabled) {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.xr-selected {
+  flex: 0 1 auto;
+  min-width: 0;
+  margin-left: auto;
+  text-align: right;
+  font-size: 13px;
+  color: var(--text-2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.xr-selected.is-miss {
+  color: var(--warn);
+}
+
+.xr-selected__name {
+  /* The selection amber, as in the viewport, so the two read as one thing. */
+  color: #ffb020;
+  font-weight: 650;
+}
+
+/* Narrow: the selection line takes its own row rather than squeezing. */
+@media (max-width: 900px) {
+  .xr-selected {
+    flex-basis: 100%;
+    text-align: left;
+  }
+}
+
+/* ---- Failure notice, shown in the ordinary page ---------------------- */
+/* Not in the overlay: when a session fails to start there is no overlay. */
+
+.xr-failure {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 12px;
+  z-index: 200;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 14px;
+  background: var(--surface-2);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-m);
+  box-shadow: var(--shadow-1);
+  color: var(--text-1);
+  font-size: 13px;
+}
+
+.xr-failure p {
+  margin: 4px 0 0;
+  color: var(--text-2);
+  font-size: 12.5px;
+}
+
+.xr-failure .btn {
+  flex: 0 0 auto;
+  min-height: 44px;
+}

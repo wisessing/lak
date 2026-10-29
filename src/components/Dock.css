@@ -1,0 +1,281 @@
+.dock {
+  display: flex;
+  flex-direction: column;
+  width: 272px;
+  min-height: 0;
+  background: var(--surface-1);
+  border-left: 1px solid var(--border);
+  flex: 0 0 auto;
+}
+
+.dock-tabs {
+  display: flex;
+  flex: 0 0 auto;
+  border-bottom: 1px solid var(--border);
+}
+
+.dock-tab {
+  flex: 1 1 0;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: 9px 4px;
+  font: inherit;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--text-3);
+  cursor: pointer;
+  transition: color 0.12s ease, border-color 0.12s ease;
+}
+
+.dock-tab:hover { color: var(--text-2); }
+
+.dock-tab.is-active {
+  color: var(--text-1);
+  border-bottom-color: var(--accent);
+}
+
+.dock-body {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.dock-section {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  padding: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+/*
+ * The skeleton section grows into spare dock height, but it must not be the
+ * only thing that gives when height runs out.
+ *
+ * `min-height: 0` alone let every other section keep its intrinsic size while
+ * this one absorbed the entire shortfall: at 1180 by 820 with the trim row
+ * open, the tree measured 0.75px and `.dock-body` never scrolled, because its
+ * content still fitted. The floor makes the content genuinely taller than the
+ * body, which is what turns on the existing `overflow-y: auto`.
+ */
+.dock-section-grow {
+  flex: 1 1 auto;
+  /* Header, selected-joint readout, and at least four rows of tree. Raised
+     from 168px when the readout was added, which had cost the tree 30px. */
+  min-height: 212px;
+  border-bottom: none;
+}
+
+.dock-section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 20px;
+}
+
+.asset-name {
+  font-size: 12.5px;
+  color: var(--text-1);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.asset-meta {
+  font-size: 11px;
+  color: var(--text-3);
+  font-family: var(--font-mono);
+}
+
+/* ---- Display toggles --------------------------------------- */
+
+.toggle-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.toggle-row {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 7px 8px;
+  border-radius: var(--radius-s);
+  cursor: pointer;
+  color: var(--text-2);
+  transition: background 0.12s ease, color 0.12s ease;
+}
+
+.toggle-row:hover { background: var(--surface-2); }
+
+.toggle-row.is-on { color: var(--text-1); }
+.toggle-row.is-on .toggle-icon { color: var(--accent); }
+
+.toggle-icon {
+  display: inline-flex;
+  color: var(--text-3);
+  flex: 0 0 auto;
+}
+
+.toggle-text {
+  display: flex;
+  flex-direction: column;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.toggle-text em {
+  font-style: normal;
+  font-size: 10.5px;
+  color: var(--text-3);
+}
+
+/* ---- Skeleton tree ---------------------------------------- */
+
+.bone-tree {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  font-size: 11.5px;
+}
+
+.bone-row { display: flex; flex-direction: column; }
+
+.bone-label {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-radius: 3px;
+  padding: 3px 4px;
+  font: inherit;
+  font-size: 11.5px;
+  color: var(--text-2);
+  text-align: left;
+  cursor: default;
+}
+
+.bone-label:hover { background: var(--surface-2); color: var(--text-1); }
+
+.bone-label.is-selected {
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
+  color: var(--text-1);
+}
+
+/* Both controls in the row are real buttons with their own hit areas. */
+.bone-caret,
+.bone-name {
+  background: transparent;
+  border: none;
+  color: inherit;
+  font: inherit;
+  padding: 0;
+  cursor: pointer;
+}
+
+.bone-caret {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  min-height: 24px;
+  flex: 0 0 auto;
+  color: var(--text-3);
+}
+.bone-caret:focus-visible,
+.bone-name:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+
+.bone-name {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 24px;
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.bone-label.is-selected .bone-name { font-weight: 650; }
+
+.selected-joint {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 20px;
+  font-size: 11.5px;
+  color: var(--text-2);
+}
+.selected-joint-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #ffb020;
+  flex: 0 0 auto;
+}
+.selected-joint-name { font-weight: 650; color: var(--text-1); }
+
+.bone-children { display: flex; flex-direction: column; }
+
+/* ---- Touch ---------------------------------------------------- */
+@media (pointer: coarse) {
+  .dock-tab {
+    min-height: 48px;
+    font-size: 13px;
+  }
+
+  .toggle-row {
+    min-height: 52px;
+    padding: 10px 12px;
+    gap: 12px;
+  }
+
+  .toggle-text { font-size: 13.5px; }
+
+  /* The tree is the densest thing in the app; rows need room to be tapped
+     without hitting their neighbour. Both controls in a row reach the 44px
+     minimum on their own: the caret is a 44px square, the name fills the rest
+     at the same height, and they sit side by side so neither overlaps. The
+     UX review measured these rows at 40px. */
+  .bone-label {
+    min-height: 44px;
+    padding: 0 6px 0 0;
+    font-size: 13px;
+    gap: 0;
+  }
+
+  .bone-caret {
+    width: 44px;
+    min-height: 44px;
+  }
+
+  .bone-name {
+    min-height: 44px;
+    padding-left: 2px;
+  }
+}
+
+/* A section header that collapses its own body. The whole row is the target,
+   so it clears the 44px minimum without a separate hit area beside the label. */
+.section-toggle {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  width: 100%;
+  min-height: 28px;
+  padding: 0;
+  background: none;
+  border: 0;
+  color: var(--text-3);
+  cursor: pointer;
+  text-align: left;
+}
+
+.section-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.section-toggle .section-label { cursor: inherit; }
+
+@media (pointer: coarse) {
+  .section-toggle { min-height: 44px; }
+}

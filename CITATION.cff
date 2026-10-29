@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+message: "If you use LAK, please cite it as below."
+title: "LAK: Lens on Animation Kinematics"
+type: software
+version: 2.0.0
+date-released: 2026-10-30
+license: Apache-2.0
+repository-code: "https://github.com/wisessing/lak"
+url: "https://wisessing.github.io/lak/"
+authors:
+  - family-names: Wisessing
+    given-names: Pisut
+    affiliation: CMKL University
+keywords:
+  - motion capture
+  - animation
+  - WebXR
+  - augmented reality
+  - three.js

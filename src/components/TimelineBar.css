@@ -1,0 +1,432 @@
+.timeline-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px 12px;
+  background: var(--surface-1);
+  border-top: 1px solid var(--border);
+  flex: 0 0 auto;
+}
+
+.timeline-bar.is-trimming {
+  box-shadow: inset 0 1px 0 var(--accent);
+}
+
+.tl-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.tl-trim-row {
+  gap: 8px;
+  flex-wrap: wrap;
+  padding-top: 2px;
+  border-top: 1px solid var(--border);
+}
+
+.tl-transport {
+  display: flex;
+  gap: 1px;
+  flex: 0 0 auto;
+}
+
+/* ---- Track ------------------------------------------------- */
+
+.tl-track {
+  position: relative;
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 40px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-s);
+  cursor: pointer;
+  touch-action: none;
+  overflow: hidden;
+}
+
+.tl-envelope {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.tl-envelope polygon {
+  fill: var(--accent);
+  opacity: 0.2;
+}
+
+.tl-discard {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.42);
+  pointer-events: none;
+}
+
+.tl-kept {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  border-left: 2px solid var(--accent);
+  border-right: 2px solid var(--accent);
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.05), transparent);
+  pointer-events: none;
+}
+
+.tl-tick {
+  position: absolute;
+  bottom: 0;
+  width: 2px;
+  height: 7px;
+  pointer-events: none;
+}
+
+.tl-tick.pop { background: var(--danger); }
+.tl-tick.jitter { background: var(--warn); }
+.tl-tick.rotation { background: var(--info); }
+
+/* ---- Issue markers ------------------------------------------ */
+/* A marker is a button the height of the track, wide enough for a finger,
+   with a thin coloured tick inside it. Clusters keep neighbouring buttons from
+   overlapping; see clusterIssues in TimelineBar.tsx. */
+.tl-marker {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 16px;
+  margin-left: -8px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.tl-marker-tick {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 2px;
+  height: 7px;
+  margin-left: -1px;
+  background: var(--text-3);
+}
+
+.tl-marker.pop .tl-marker-tick { background: var(--danger); }
+.tl-marker.jitter .tl-marker-tick { background: var(--warn); }
+.tl-marker.rotation .tl-marker-tick { background: var(--info); }
+
+.tl-marker:hover .tl-marker-tick,
+.tl-marker.is-open .tl-marker-tick { height: 12px; }
+.tl-marker:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; border-radius: 3px; }
+
+.tl-marker-count {
+  position: absolute;
+  left: 50%;
+  bottom: 9px;
+  transform: translateX(-50%);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  line-height: 1;
+  color: var(--text-2);
+  pointer-events: none;
+}
+
+/* ---- Legend and details ------------------------------------- */
+.tl-legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 14px;
+  font-size: 10.5px;
+  color: var(--text-3);
+}
+
+.tl-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  white-space: nowrap;
+}
+
+.tl-legend-count {
+  font-family: var(--font-mono);
+  color: var(--text-2);
+}
+
+.tl-legend-note { flex: 1 1 auto; text-align: right; }
+
+.tl-swatch {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  flex: 0 0 auto;
+}
+.tl-swatch.envelope { background: var(--accent); opacity: 0.45; width: 14px; }
+.tl-swatch.pop { background: var(--danger); }
+.tl-swatch.jitter { background: var(--warn); }
+.tl-swatch.rotation { background: var(--info); }
+
+.tl-details {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px 10px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-s);
+}
+
+.tl-details-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.tl-details-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 160px;
+  overflow-y: auto;
+}
+
+.tl-details-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11.5px;
+  color: var(--text-2);
+}
+
+.tl-details-text { flex: 1 1 auto; min-width: 0; }
+.tl-details-text strong { color: var(--text-1); font-weight: 650; }
+.tl-details-text em { font-style: normal; color: var(--text-3); }
+.tl-goto { flex: 0 0 auto; white-space: nowrap; }
+
+/* The needle is positioned from a CSS custom property, written by a transient
+   store subscription — so playback moves it without re-rendering React. */
+.tl-playhead {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: var(--playhead, 0%);
+  width: 2px;
+  margin-left: -1px;
+  background: var(--text-1);
+  pointer-events: none;
+}
+
+.tl-playhead::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -3px;
+  width: 8px;
+  height: 4px;
+  background: var(--text-1);
+  border-radius: 0 0 2px 2px;
+}
+
+/* ---- Trim handles ------------------------------------------ */
+
+.tl-handle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 14px;
+  margin-left: -7px;
+  cursor: ew-resize;
+}
+
+.tl-handle::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 5px;
+  width: 4px;
+  background: var(--accent);
+  border-radius: 2px;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.4);
+}
+
+.tl-handle:hover::before { background: var(--accent-hover); }
+
+.tl-handle span {
+  position: absolute;
+  top: 2px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--text-1);
+  background: rgba(0, 0, 0, 0.55);
+  padding: 1px 3px;
+  border-radius: 3px;
+  pointer-events: none;
+}
+
+.tl-handle.in span { left: 10px; }
+.tl-handle.out span { right: 10px; }
+
+/* ---- Compact overlay toggles --------------------------------- */
+
+.tl-overlays {
+  display: flex;
+  gap: 1px;
+  flex: 0 0 auto;
+}
+
+/* The pressed state is the amber of the selection highlight for the clear
+   button and the accent for the toggles, so the row reads the same way the
+   viewport does. */
+.tl-clear-selection { color: #ffb020; }
+
+/* ---- Readouts & fields ------------------------------------- */
+
+.tl-time {
+  flex: 0 0 auto;
+  font-size: 11.5px;
+  color: var(--text-2);
+  min-width: 96px;
+  text-align: right;
+}
+
+.tl-speed {
+  flex: 0 0 auto;
+  width: 74px;
+}
+
+/* A stacked caption over the select, in the same style as the trim fields, so
+   "Playback speed" and "Retime clip" read as siblings that differ. */
+.tl-speed-label {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 10px;
+  color: var(--text-3);
+  flex: 0 0 auto;
+}
+
+/* A fixed box sized for "f999/999", so the bar does not shift as the count
+   gains a digit during playback. The current
+   frame has its own right-aligned three-digit slot, so the "/" stays put too.
+   Both widths are in ch of the monospaced face. */
+.tl-frame {
+  flex: 0 0 auto;
+  width: 8ch;
+  font-size: 11px;
+  color: var(--text-3);
+  white-space: nowrap;
+}
+
+.tl-frame-num {
+  display: inline-block;
+  min-width: 3ch;
+  text-align: right;
+}
+
+.tl-field {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-size: 10px;
+  color: var(--text-3);
+  flex: 0 0 auto;
+}
+
+.tl-field-wide { flex: 1 1 130px; min-width: 110px; }
+.tl-field input[type='number'] { width: 66px; }
+
+.tl-readout {
+  font-size: 11px;
+  color: var(--text-2);
+  align-self: flex-end;
+  padding-bottom: 5px;
+  white-space: nowrap;
+}
+
+.tl-spacer { flex: 1 1 auto; }
+
+.tl-trim-row .btn-icon,
+.tl-trim-row .btn { align-self: flex-end; }
+
+/* ---- Narrow layout ------------------------------------------ */
+/* Stack the transport above the scrubber so the track keeps full width
+   instead of being squeezed between controls on a tablet. */
+@media (max-width: 900px) {
+  .tl-row {
+    flex-wrap: wrap;
+  }
+
+  .tl-track {
+    order: 10;
+    flex: 1 0 100%;
+    height: 52px;
+  }
+
+  .tl-transport {
+    flex: 0 0 auto;
+  }
+
+  .tl-time {
+    min-width: 0;
+    flex: 1 1 auto;
+    text-align: left;
+  }
+
+  /* On a phone the first line cannot hold transport, overlays, speed and
+     Trim together. The overlays wrap to their own line ahead of the track
+     rather than squeezing the transport. */
+  .tl-overlays { order: 5; }
+
+  /* Paired with the row minimums in the shell grid: where the timeline is tall
+     enough to squeeze the scene out, it gives the height back and scrolls its
+     own contents instead of losing them. Scoped to the narrow layout, because
+     making this a scroll container at every width changes what a pointer has to
+     do to reach a control that was never out of reach. See `.app`. */
+  .timeline-bar {
+    overflow-y: auto;
+  }
+}
+
+/* ---- Touch: coarse pointers get bigger everything ------------ */
+@media (pointer: coarse) {
+  .tl-track {
+    height: 56px;
+  }
+
+  /* A finger cannot hit a 14px handle. The visible bar stays slim; the
+     hit area around it grows. */
+  .tl-handle {
+    width: 44px;
+    margin-left: -22px;
+  }
+
+  .tl-handle::before {
+    left: 20px;
+    width: 5px;
+  }
+
+  .tl-handle.in span { left: 26px; }
+  .tl-handle.out span { right: 26px; }
+
+  .tl-field input[type='number'] { width: 84px; }
+  .tl-trim-row { gap: 12px; }
+
+  /* Marker hit targets reach the touch minimum in width; the track is already
+     56px tall. Clustering uses the same 44px so neighbours never overlap. */
+  .tl-marker {
+    width: 44px;
+    margin-left: -22px;
+  }
+
+  .tl-legend { font-size: 11.5px; }
+  .tl-details-item { font-size: 12.5px; }
+}

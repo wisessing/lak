@@ -1,0 +1,128 @@
+/* The shell grid. Everything is in flow: toolbar, body (viewport + dock),
+   timeline, status bar. No panel floats over the viewport except the gizmo,
+   the toast and modals. */
+
+.app {
+  display: grid;
+  /*
+   * The scene keeps a floor, and the timeline yields.
+   *
+   * The timeline row is content-sized, and it grows: at 390 by 844 with both
+   * the issue details and the trim row open it reached 757 pixels and left the
+   * scene 35. The subject was evicted from its own viewport and the floating
+   * camera controls were clipped to nothing. Giving the body a minimum and the
+   * timeline a zero minimum reverses who gives way, and the timeline scrolls
+   * inside whatever it is left with, so none of its controls become
+   * unreachable.
+   */
+  grid-template-rows: auto minmax(240px, 1fr) minmax(0, auto) auto;
+  /* One column that never grows past the screen. Sized by content, a top bar
+     wider than a phone widened the column, and the app scrolled sideways to
+     keep the focused control in view, cutting off the left of every row. */
+  grid-template-columns: minmax(0, 1fr);
+  overflow: clip;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  background: var(--surface-1);
+  color: var(--text-2);
+}
+
+.app-body {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* ---- Toast ------------------------------------------------- */
+
+.toast {
+  position: fixed;
+  top: 46px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: var(--z-toast);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 520px;
+  padding: 9px 10px 9px 13px;
+  background: var(--surface-2);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-m);
+  box-shadow: var(--shadow-1);
+  font-size: 12px;
+  color: var(--text-1);
+}
+
+/* Success and failure share the banner, so the border and icon carry which is
+   which — an applied edit reported in danger red reads as something going
+   wrong. */
+.toast-error { border-color: var(--danger); }
+.toast-error > svg { color: var(--danger); }
+
+.toast-info { border-color: var(--accent); }
+.toast-info > svg { color: var(--accent); }
+
+.toast > svg { flex: 0 0 auto; }
+.toast > span { flex: 1 1 auto; }
+
+/* ---- Shortcut sheet ---------------------------------------- */
+
+.shortcut-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.shortcut-list > div {
+  display: grid;
+  grid-template-columns: 128px 1fr;
+  align-items: baseline;
+  gap: 12px;
+  padding: 5px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 12px;
+}
+
+.shortcut-list > div:last-child { border-bottom: none; }
+.shortcut-list dt { color: var(--text-1); font-size: 11px; }
+.shortcut-list dd { color: var(--text-2); }
+
+/* ---- Narrow layout: the dock becomes a drawer ---------------- */
+
+.app.is-narrow .app-body {
+  grid-template-columns: 1fr;
+}
+
+.app.is-narrow .dock {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: min(320px, 86vw);
+  z-index: var(--z-overlay);
+  box-shadow: var(--shadow-1);
+  animation: dock-in 0.18s ease-out;
+}
+
+@keyframes dock-in {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+/* Tapping outside the drawer closes it. A button, so it is reachable by
+   keyboard and announced, rather than a bare div swallowing clicks. */
+.dock-scrim {
+  position: absolute;
+  inset: 0;
+  z-index: calc(var(--z-overlay) - 1);
+  background: rgba(6, 7, 9, 0.45);
+  border: none;
+  cursor: pointer;
+}
+
+.app-body {
+  position: relative;
+}

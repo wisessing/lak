@@ -1,0 +1,265 @@
+.view-gizmo {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  /* The widget floats bare over the viewport, so only its own shapes may take
+     the pointer — everything else must fall through to OrbitControls. */
+  pointer-events: none;
+}
+
+.view-gizmo__dial {
+  display: block;
+  overflow: visible;
+  /* Stops a touch drag on the gizmo from scrolling or pinching the page. */
+  touch-action: none;
+  cursor: grab;
+}
+
+.view-gizmo__dial.is-dragging {
+  cursor: grabbing;
+}
+
+/* ---- Axis identity, matching the tube axes drawn in the scene ---- */
+.view-gizmo {
+  --gizmo-x: #f2564b;
+  --gizmo-y: #6fd44f;
+  --gizmo-z: #5b8dff;
+}
+
+.view-gizmo__backdrop {
+  fill: var(--bg-panel);
+  stroke: var(--border);
+  stroke-width: 1;
+  opacity: 0;
+  pointer-events: auto;
+  transition: opacity 0.2s ease;
+}
+
+.view-gizmo__dial:hover .view-gizmo__backdrop,
+.view-gizmo__dial.is-dragging .view-gizmo__backdrop {
+  opacity: 0.9;
+}
+
+.view-gizmo__spoke {
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  opacity: 0.55;
+}
+
+.view-gizmo__spoke--x { stroke: var(--gizmo-x); }
+.view-gizmo__spoke--y { stroke: var(--gizmo-y); }
+.view-gizmo__spoke--z { stroke: var(--gizmo-z); }
+
+.view-gizmo__axis {
+  pointer-events: auto;
+  cursor: pointer;
+  outline: none;
+}
+
+/* Each group carries its own axis hue, so the ball rules below stay generic. */
+.view-gizmo__axis--x { --axis-color: var(--gizmo-x); }
+.view-gizmo__axis--y { --axis-color: var(--gizmo-y); }
+.view-gizmo__axis--z { --axis-color: var(--gizmo-z); }
+
+.view-gizmo__ball {
+  fill: var(--axis-color);
+  stroke: var(--axis-color);
+  stroke-width: 2;
+}
+
+/* Balls pointing away from the viewer read as hollow rings, as in Blender. */
+.view-gizmo__axis.is-rear .view-gizmo__ball {
+  fill: var(--bg-panel);
+  fill-opacity: 0.85;
+}
+
+/* The painted balls are decoration only; every pointer and key event belongs to
+   the fixed-order hit layer above them. See the comment in ViewGizmo.tsx. */
+.view-gizmo__paint {
+  pointer-events: none;
+}
+
+/* Invisible: it exists to catch pointers and carry the focus ring, never to
+   paint. Filling it would hide the letter on the ball underneath. */
+.view-gizmo__hit-area {
+  fill: transparent;
+  stroke: transparent;
+  stroke-width: 3;
+}
+
+/* Hover fills the ball in and rings it, rather than recolouring it — the axis
+   hue is the only thing identifying which view you are about to jump to. Driven
+   by `is-hover` from React, because the hovered node is in the layer above. */
+.view-gizmo__axis.is-hover .view-gizmo__ball {
+  fill: var(--axis-color);
+  fill-opacity: 1;
+  stroke: var(--text-h);
+  stroke-width: 3;
+}
+
+.view-gizmo__letter {
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 700;
+  /* Knockout text sits on the fixed axis colours, not on a themed surface, so
+     it is deliberately a literal near-black rather than a theme token. */
+  fill: #101010;
+  text-anchor: middle;
+  dominant-baseline: central;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Focus ring, drawn by hand so it tracks the ball as the gizmo rotates. */
+.view-gizmo__focus {
+  fill: none;
+  stroke: var(--text-h);
+  stroke-width: 2;
+  opacity: 0;
+}
+
+.view-gizmo__axis:focus-visible .view-gizmo__focus {
+  opacity: 1;
+}
+
+/* ---- Icon buttons ---- */
+.view-gizmo__buttons {
+  display: flex;
+  gap: 4px;
+  pointer-events: auto;
+}
+
+.view-gizmo__buttons button {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 6px;
+  padding: 5px;
+  display: flex;
+  cursor: pointer;
+  backdrop-filter: blur(14px);
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+}
+
+.view-gizmo__buttons button svg {
+  width: 15px;
+  height: 15px;
+}
+
+.view-gizmo__buttons button:hover {
+  background: var(--accent-light);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.view-gizmo__buttons button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/*
+ * The label is the hover tooltip made permanent for touch.
+ *
+ * `title` does not exist on a tablet: there is no hover, so the only way to
+ * learn what these three do was to press one and see. Hidden where a tooltip
+ * does work, shown where it does not.
+ */
+.view-gizmo__btn-label {
+  display: none;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+@media (pointer: coarse) {
+  .view-gizmo__buttons {
+    /* Wider targets need more room between them, or a thumb aimed at Reset
+       lands on Focus. */
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  .view-gizmo__buttons button {
+    /* The project's 44px minimum, measured on the button box itself. The
+       baseline was 27 by 27. */
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0 12px;
+    gap: 7px;
+    align-items: center;
+    border-radius: 8px;
+  }
+
+  .view-gizmo__buttons button svg {
+    width: 17px;
+    height: 17px;
+  }
+
+  .view-gizmo__btn-label {
+    display: inline;
+  }
+}
+
+/*
+ * Narrow portrait: put the cluster in the corner instead of across the subject.
+ *
+ * The labelled row above is 267 CSS pixels wide. On a 390-pixel screen the
+ * centred column that holds it starts at x=111, so the row spans two thirds of
+ * the width right where the subject is framed: projecting the dance fixture's
+ * baked bones through the live camera put 146 samples inside the button box, in
+ * every one of its 64 frames (the Mixamo-era samples). The kick fixture sat lower and missed
+ * it, which is why a screenshot pass did not catch this.
+ *
+ * So the row becomes a column against the right edge, and each button puts its
+ * label under its icon instead of beside it. That is what gets the footprint to
+ * 44 pixels wide — the touch minimum, and nothing more — while keeping the
+ * label visible, which a touch screen has no hover to recover.
+ */
+@media (pointer: coarse) and (max-width: 560px) {
+  .view-gizmo {
+    align-items: flex-end;
+    /*
+     * Fit the scene, which is not a fixed height.
+     *
+     * The timeline grows when it has more to show, and the scene gives up the
+     * difference: opening issue details at this width takes it from 492 to 256
+     * CSS pixels. A 250-pixel column pinned 20 pixels below the top then ran
+     * past the bottom edge and `overflow: hidden` on the viewport cut Focus
+     * down to 30 visible pixels — a 44-pixel target in name only. The
+     * percentage resolves against the scene box, so this tracks it.
+     */
+    max-height: calc(100% - 28px);
+  }
+
+  .view-gizmo__dial {
+    /* Whatever has to go, goes from here. A flex item will not shrink below its
+       intrinsic size while `min-height` is `auto`, and an SVG has one. */
+    min-height: 0;
+    flex-shrink: 1;
+  }
+
+  .view-gizmo__buttons {
+    flex-direction: column;
+    align-items: stretch;
+    /* Never: shrinking these is the defect, not the remedy. */
+    flex-shrink: 0;
+  }
+
+  .view-gizmo__buttons button {
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 4px;
+    gap: 2px;
+  }
+
+  .view-gizmo__btn-label {
+    font-size: 10px;
+  }
+}

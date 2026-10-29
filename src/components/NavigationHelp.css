@@ -1,0 +1,47 @@
+.nav-help {
+  width: 100%;
+  text-align: left;
+}
+
+.nav-help-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.nav-help-list {
+  margin: 0;
+  display: grid;
+  gap: 3px;
+}
+
+.nav-help-row {
+  display: grid;
+  grid-template-columns: 52px 1fr;
+  gap: 8px;
+  align-items: baseline;
+  font-size: 11px;
+}
+
+.nav-help-row dt {
+  color: var(--text-2);
+  font-weight: 650;
+}
+
+.nav-help-row dd {
+  margin: 0;
+  color: var(--text-3);
+}
+
+/* The pointer equivalent is secondary on a tablet, but still readable. */
+.nav-help-row dd em {
+  font-style: normal;
+  opacity: 0.75;
+}
+
+@media (pointer: coarse) {
+  .nav-help-row { font-size: 12px; }
+  .nav-help-row dd em { display: none; }
+}

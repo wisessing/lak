@@ -1,0 +1,129 @@
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 7px;
+  margin-top: 4px;
+}
+
+.dialog-actions-left { justify-content: flex-start; }
+
+.dialog-warn {
+  display: flex;
+  gap: 10px;
+  padding: 10px 12px;
+  background: var(--surface-2);
+  border-left: 2px solid var(--warn);
+  border-radius: var(--radius-s);
+}
+
+.dialog-warn > svg { color: var(--warn); flex: 0 0 auto; }
+
+.dialog-slug {
+  font-size: 11px;
+  color: var(--text-3);
+  padding: 6px 8px;
+  background: var(--surface-2);
+  border-radius: var(--radius-s);
+}
+
+/* Export format cards */
+.format-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.format-card {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 11px 12px;
+  text-align: left;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-m);
+  cursor: pointer;
+  font: inherit;
+  transition: border-color 0.12s ease, background 0.12s ease;
+}
+
+.format-card:hover:not(:disabled) {
+  border-color: var(--accent);
+  background: var(--surface-3);
+}
+
+.format-card:disabled { opacity: 0.45; cursor: not-allowed; }
+.format-card strong { font-size: 13px; color: var(--text-1); }
+.format-card span { font-size: 11px; color: var(--text-3); line-height: 1.4; }
+.format-card em { font-style: normal; font-size: 11px; color: var(--accent); }
+
+.dialog-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.dialog-check em { font-style: normal; color: var(--text-3); font-size: 11px; }
+
+.dialog-more summary {
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 650;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-3);
+}
+
+/* A finger needs the whole row, not the 13px checkbox or the 11px caption. */
+@media (pointer: coarse) {
+  .dialog-check,
+  .dialog-more summary {
+    min-height: 44px;
+  }
+  .dialog-more summary {
+    display: flex;
+    align-items: center;
+  }
+}
+
+.dialog-more-body {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  padding-top: 10px;
+}
+
+/* File name row. The label sits above the input so the field can run the full
+   dialog width — a name is long and a truncated one is worse than useless. */
+.dialog-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.dialog-field input { width: 100%; }
+
+/* Inline "reset to <suggestion>" inside the slug line. */
+.btn-link {
+  background: none;
+  border: 0;
+  padding: 0;
+  margin-left: 8px;
+  font: inherit;
+  color: var(--accent);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.btn-link:hover { color: var(--text-1); }
+
+/* The outgoing clip, stated before a format is chosen. */
+.dialog-summary {
+  margin: 0;
+  font-size: 12px;
+  color: var(--text-2);
+  line-height: 1.45;
+}
+.dialog-summary .mono { color: var(--text-1); }

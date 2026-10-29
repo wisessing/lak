@@ -1,0 +1,69 @@
+.sample-picker {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 4px;
+  width: 100%;
+}
+
+.sample-picker-card {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  max-width: 380px;
+}
+
+/* Descriptions wrap to different line counts, so the buttons must stretch to
+   the row rather than each sizing to its own text. */
+.sample-picker li {
+  display: flex;
+}
+
+.sample-btn {
+  height: 100%;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas:
+    'label meta'
+    'desc  desc';
+  gap: 1px 8px;
+  width: 100%;
+  /* The project touch target, applied here rather than only under a coarse
+     pointer: these rows carry two lines of text and are never smaller. */
+  min-height: 44px;
+  padding: 7px 10px;
+  text-align: left;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-s);
+  color: var(--text-1);
+  cursor: pointer;
+  font: inherit;
+}
+
+.sample-btn:hover:not(:disabled) { border-color: var(--border-strong); }
+.sample-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.sample-btn:disabled { opacity: 0.55; cursor: default; }
+
+.sample-btn.is-active,
+.sample-btn.is-active:hover:not(:disabled) {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.sample-label { grid-area: label; font-size: 12px; font-weight: 650; }
+.sample-meta { grid-area: meta; font-size: 10.5px; color: var(--text-3); }
+.sample-desc {
+  grid-area: desc;
+  font-size: 10.5px;
+  color: var(--text-3);
+  line-height: 1.3;
+}
+
+/* The dock is narrow; the second line would wrap to three. */
+.sample-picker-dock .sample-desc { display: none; }
+.sample-picker-dock .sample-btn { min-height: 44px; align-items: center; }
+
+@media (pointer: coarse) {
+  .sample-btn { min-height: 48px; padding: 9px 12px; }
+  .sample-picker { gap: 6px; }
+}
