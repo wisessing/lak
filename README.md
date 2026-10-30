@@ -8,6 +8,8 @@ LAK is a web viewer for skeletal motion stored as FBX or GLB: motion capture fro
 
 **Try it:** <https://wisessing.github.io/lak/>
 
+**User guide:** [docs/USER_GUIDE.md](docs/USER_GUIDE.md) explains every control, with screenshots.
+
 ![LAK showing a dancing mannequin with ghost poses and motion trails](.github/assets/lak-screenshot.png)
 
 ## Features

@@ -328,7 +328,7 @@ export function Dock() {
               />
             </div>
             <p className="hint">
-              Both overlays draw on the skeleton, so enabling one turns the skeleton on.
+              These overlays work with or without the skeleton.
             </p>
           </section>
         )}
