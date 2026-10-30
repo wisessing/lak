@@ -69,7 +69,9 @@ The mannequin and its four clips (Idle, Walk, Punch, Dance) come from the [Unive
 
 ## Acknowledgement
 
-LAK was developed at CMKL University with support from the Fundamental Fund (FF68: fiscal year 2568, project 4791326), Thailand Science Research and Innovation (TSRI), under the project "A Prototype System for Motion Data Capture and Mixed Reality Visualization".
+LAK was developed at CMKL University with support from the Fundamental Fund (FF68: fiscal year 2568), Thailand Science Research and Innovation (TSRI), under the project "A Prototype System for Motion Data Capture and Mixed Reality Visualization".
+
+โครงการวิจัยนี้ได้รับทุนอุดหนุนจากสำนักงานคณะกรรมการส่งเสริมวิทยาศาสตร์ วิจัยและนวัตกรรม (สกสว.) ทุนสนับสนุนงานมูลฐาน (Fundamental Fund) ปีงบประมาณ พ.ศ. 2568
 
 ## Citing LAK
 
